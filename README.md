@@ -1,2 +1,10 @@
 # MBARC_datapack
-Code for acoustic data packaging for SIO MBARC
+Process for packaging data to send to NCEI.
+
+## Setup
+
+## Preparing
+
+## Using PACE
+
+## End Results
