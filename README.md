@@ -17,8 +17,8 @@ If code alteration is needed, please create your own branch and commit a pull re
   3. Copy and paste premade translator files into your PACE.
        * Find and open where PACE appData is saved. For MBARC, will likely be C:\Users\HARP\.pace.
        * If you don't see .pace, click "Hidden items" ![image](https://github.com/user-attachments/assets/2473d09b-a3a7-43f0-ac96-b07ab146083d)
-       * In .pace\data, replace the folders 
-
+       * In .pace\data, replace the folders that have equivalents [here]. (https://github.com/KaseyMCastello/MBARC_datapack/tree/main/appData) This will help you not have to build your own translator later.
+       * ![image](https://github.com/user-attachments/assets/4f091e3b-42ca-4ab3-a3ad-89774838f3a9)
 
 #### 2. FLAC Installation
   1. Download [flac-1.3.2-win](https://github.com/KaseyMCastello/MBARC_datapack/blob/main/flac-1.3.2-win-20250411T171703Z-001.zip).
@@ -78,7 +78,16 @@ If there are any issues in the packing process, an orange warning will be displa
 ## D. PACE Operation
 For a full PACE instructional, please review [PACE GUI Guide.pdf](https://github.com/user-attachments/files/19712695/PACE.GUI.Guide.pdf). 
 
+#### 1. Review metadata (will only have to do once per project)
+Click through each field (blue) in metadata and ensure that all of the people/places/organizations etc that you are entering for your project exist in PACE. If not, create them.
+![image](https://github.com/user-attachments/assets/07a0d5c5-ecad-4663-a9d4-7a6574d4a051)
 
-## End Results
+#### 2. Translate
+Click "Package" -> translate and follow all prompts to translate your data to prepare for packing. (Note, if there are any errors, a warning box will come up. You may have to correct those errors and try retranslating again. 
+![image](https://github.com/user-attachments/assets/b12e1545-dc61-4f5d-8ed1-17854b90ff42)
 
-## E. End Results
+### 3. Package. 
+Check as many drives as you would like to package at once and click "Package Data". Follow the prompts until the end to complete your package. When it says "Choose Directory" this is the drive you intend to send to NCEI. Should JUST be of the format (E:\). Once directory verified, a map will pop up. If this is the world area you expected, click "verify" to begin packing. Packing is complete once blue line in PACE is full. 
+![image](https://github.com/user-attachments/assets/7429b12d-477d-4cb8-a595-061380878308)
+
+
