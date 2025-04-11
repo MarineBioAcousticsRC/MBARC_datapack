@@ -16,7 +16,7 @@
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "G:\Lab Work\DataPacking\MBARC_PACE_DATA_IMPORT_1CHANNEL_template.xlsx"; %Location of your edited spreadsheet
+inputFile = "G:\Lab Work\DataPacking\MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"; %Location of your edited spreadsheet
 fullPathFlac = '"C:\Program Files\Flac\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 
@@ -29,6 +29,9 @@ tfFile = "G:\Lab Work\DataPacking\HARP_Hydrophones.xlsx"; %Link to TF documentat
 %For in-place packing. link to any empty folder on your machine. (KC: Find
 %better way)
 emptyFolder = "G:\Lab Work\DataPacking\TemplateDocs\empty";
+
+%How often do you want FLAC steps to report it's progress
+msgInterval = 20*60;  % To print status every x mins instead of every file. Change left number.
 
 %Choose your project type. (1:GOM, 2: LMR, 3: CINMS ????) 
 projectType = 3; 
@@ -272,8 +275,13 @@ for i = 1:length(inputLocations)
             end
         end
     end
+    % Filter directories that contain 'disk' in their name
+    diskDirs = dirList([dirList.isdir]);  % Only directories
+    diskDirs = diskDirs(contains({diskDirs.name}, 'disk', 'IgnoreCase', true));  % Contain 'disk'
+
     LTSA_size = length(dir(fullfile(outDir, '*.ltsa')));
-    if(LTSA_size < length(dirList)-2)
+
+    if(LTSA_size < length(diskDirs)-2)
         warning('Missing LTSAs in your %s source directory.\n', outDir);
         siteSuccess(1, i) = -1;
     end
@@ -504,7 +512,8 @@ clearvars myScientists myScientists mySource mySponsors normalizedSiteName NS op
 clearvars quality_Methods row rowCount seaArea siteName sourceFile sourceInfo splitString tfNum tfRow thisList outDirTF
 %% TO FLAC ALL FILES. (Stolen/Modified from Katrina)
 for i=1:length(inputLocations)
-    fprintf('Beginning processing on DISK %s\n', inputLocations(i));
+    fprintf('Beginning processing on DISK %s\n', deploymentNames(i));
+    lastMsgTime = tic;  % Start timing
 
     %BEFORE BEGINNING FLAC, MAKE SURE TARGET HAS ENOUGH SPACE
     % Source and destination directories
@@ -527,7 +536,7 @@ for i=1:length(inputLocations)
     % Check if there's enough space
     if ~(availableSpace > (totalFileSize/compressionRatio))
         % Not enough space
-        warning("Insufficient Space on Target Drive for FLAC Processing of %s", inputLocations(i));
+        warning("Insufficient Space on Target Drive for FLAC Processing of %s", deploymentNames(i));
         siteSuccess(1, i) = -1;
         break
     end
@@ -561,12 +570,17 @@ for i=1:length(inputLocations)
         nFiles = length(thisList);
         for iFile = 1:length(thisList)
             myCMD = sprintf(myStr,fullPathFlac,outDir,thisList(iFile).name);
-            [status,cmdout] = system(char(myCMD));    
+            [status,cmdout] = system(char(myCMD));  
+            % Check if it's been 15 minutes since last message
+            if toc(lastMsgTime) > msgInterval
+                fprintf('[%s] Still processing on disk %s. Currently on Folder %d: Done with file %0.0d of %0.0d.\n', datestr(now, 'dd-mmm-yyyy HH:MM:SS'), siteName, iDir,iFile,nFiles);
+                lastMsgTime = tic;  % Reset timer
+            end
             %fprintf('Folder %0.0f: Done with file %0.0f of %0.0f - %s\n',iDir,iFile,nFiles,thisList(iFile).name)
         end
     end
 
-    fprintf('Completed processing on DISK %s\n', inputLocations(i));
+    fprintf('Completed processing on DISK %s\n', deploymentNames(i));
 end
 
 %Check that each flac was successful. If it wasn't, give the user a
