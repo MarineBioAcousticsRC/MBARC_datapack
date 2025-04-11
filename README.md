@@ -46,7 +46,14 @@ Relevant Fields
   * dataSetPackager: Your Name
   * inputFile: Link to the spreadsheet you filled out in step 1.
   * fullPathFlac: Link to where you saved the flac folder during setup. (Format: *\flac-1.3.2-win\win64\flac)
-  * 
+  * templateDocsLocation: Link to where you saved the LTSA, xwav, and tf read me files. Can be current directory.
+  * hdsFile: Link to where you saved the Harp Data Summary in step 1.
+  * tfFile: Where you saved the HARP_Hyrdophones xlsx sheet in step 1. 
+  * tfDrive: Link to your Google Drive desktop. (Format: *\Shared drives\MBARC_TF)
+  * emptyFolder: Link this to any empty folder on your machine. (Workaround for packing in place).
+  * msgInterval (OPTIONAL): This is how often you want the program to report flac progress. Currently set to every 20 minutes.
+  * projectType: Set to 1 for GOM datasets, 2 for LMR, 3 for CINMS. Currently, that's all I have programmed but can add more later.
+  * compressionRatio: Probably won't change. Ratio of file sizes before and after flac. Used to verify space on target drive.
 ![image](https://github.com/user-attachments/assets/ffdab2e5-8960-47b1-b37f-28253dfb7aba)
 
 
