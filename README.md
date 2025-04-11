@@ -1,5 +1,4 @@
 # MBARC_datapack
-The datapack repository provides code to assist in efficiently packaging High-Frequency Acoustic Recording Package (HARP) data for NOAA archival. It is based on Scripps Institution of Oceanography MBARC file management systems and may need to be adapted for use outside the organization. 
 This repository contains tools designed to streamline the packaging of High-Frequency Acoustic Recording Package (HARP) data for archival with NOAA. It is built upon the file management systems employed by the Scripps Institution of Oceanography's MBARC program and may require modification for use outside of that environment, or for operation on Linux based systems.
 
 For inquiries, please contact: kcastello@ucsd.edu
@@ -23,7 +22,7 @@ _For correct MBARC operation, you should have access to the "MBARC_TF" and the "
 2. Follow instructions on Google Drive for Desktop to complete initial installation.
 3. Open newly installed program. Once open, follow prompts to sign into your UCSD Google account.
 4. This will make a mirrored drive on your computer. Go to the mirrored drive using file explorer.
-5. Right-click MBARC_TF and choose "make available offline"
+5. Right-click MBARC_TF and choose "make available offline."
 
 ## Preparing
 ## C. Preparing
