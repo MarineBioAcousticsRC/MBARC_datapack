@@ -16,14 +16,14 @@
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "G:\Lab Work\DataPacking\MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"; %Location of your edited spreadsheet
+inputFile = "G:\Lab Work\DataPacking\MBARC_PACE_DATA_IMPORT_1CHANNEL_LMR.xlsx"; %Location of your edited spreadsheet
 fullPathFlac = '"C:\Program Files\Flac\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 
 %For Accessing Relevant Google Sheets
 templateDocsLocation = 'G:\Lab Work\DataPacking\TemplateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
 hdsFile = "G:\Lab Work\DataPacking\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "J:\Shared drives\MBARC_TF"; %Link to google drive.
+tfDrive = "I:\Shared drives\MBARC_TF"; %Link to google drive.
 tfFile = "G:\Lab Work\DataPacking\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
 %For in-place packing. link to any empty folder on your machine. (KC: Find
@@ -34,10 +34,10 @@ emptyFolder = "G:\Lab Work\DataPacking\TemplateDocs\empty";
 msgInterval = 20*60;  % To print status every x mins instead of every file. Change left number.
 
 %Choose your project type. (1:GOM, 2: LMR, 3: CINMS ????) 
-projectType = 3; 
+projectType = 2; 
 
 %Compression Ratio (Will Be Used to Verify Enough Space on the Drive)
-compressionRatio = 1.66 * 1024 / 898; %Compression Ratio : (1.66Tb Originally * 1024 GB/TB) / (898 GB after FLAC)
+compressionRatio = 2 / 5.59; %Compression Ratio : (2 Tb post-flac * 5.59 tb after)
 
 %% ESTABLISH CORRECT DATAFIELDS FOR DIFFERENT PROJECTS
 %Sets variables for appropriate spreadsheet filling based on the project.
@@ -621,7 +621,7 @@ fprintf("                    END CODE SUMMARY                    \n");
 fprintf("--------------------------------------------------------\n");
 for i=1:length(inputLocations)
     splitString = strsplit(inputLocations(i), filesep);  % Find last occurrence of '\'
-    siteName = splitString(end);
+    siteName = deploymentNames(i);
 
     if(siteSuccess(i) == -1)
         warning("At least one error occurred in preparing package for %s,\n Please review log for error messages and correct before PACE operation.", siteName);
