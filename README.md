@@ -14,7 +14,8 @@ If code alteration is needed, please create your own branch and commit a pull re
 #### 1. PACE Installation
   1. Download appropriate GUI file from [here](https://github.com/CI-CMG/pace/releases/tag/v1.0.2). For MBARC, this should be "pace-gui-Windows-X64-1.0.2.msi"
   2. Open downloaded file to launch installer and follow prompts to complete installation.
-  3. Copy and paste premade translator files into your PACE.
+  3. Open PACE application and then close again.
+  4. Copy and paste premade translator files into your PACE.
        * Find and open where PACE appData is saved. For MBARC, will likely be C:\Users\HARP\.pace.
        * If you don't see .pace, click "Hidden items" ![image](https://github.com/user-attachments/assets/2473d09b-a3a7-43f0-ac96-b07ab146083d)
        * In .pace\data, replace the folders that have equivalents [here]. (https://github.com/KaseyMCastello/MBARC_datapack/tree/main/appData) This will help you not have to build your own translator later.
