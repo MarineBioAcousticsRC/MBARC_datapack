@@ -534,7 +534,7 @@ for i=1:length(inputLocations)
     availableSpace = fileObj.getUsableSpace(); % Bytes
     
     % Check if there's enough space
-    if ~(availableSpace > (totalFileSize/compressionRatio))
+    if ~(availableSpace > (totalFileSize*compressionRatio))
         % Not enough space
         warning("Insufficient Space on Target Drive for FLAC Processing of %s", deploymentNames(i));
         siteSuccess(1, i) = -1;
