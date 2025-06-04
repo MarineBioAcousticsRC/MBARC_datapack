@@ -16,19 +16,18 @@
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "G:\Lab Work\DataPacking\MBARC_PACE_DATA_IMPORT_1CHANNEL_LMR.xlsx"; %Location of your edited spreadsheet
-fullPathFlac = '"C:\Program Files\Flac\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
-
+inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"; %Location of your edited spreadsheet
+fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 %For Accessing Relevant Google Sheets
-templateDocsLocation = 'G:\Lab Work\DataPacking\TemplateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
-hdsFile = "G:\Lab Work\DataPacking\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "I:\Shared drives\MBARC_TF"; %Link to google drive.
-tfFile = "G:\Lab Work\DataPacking\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
+templateDocsLocation = 'D:\Code\MBARC_datapack\templateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
+hdsFile = "D:\Code\MBARC_datapack\supportData\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
+tfDrive = "J:\Shared drives\MBARC_TF"; %Link to google drive.
+tfFile = "D:\Code\MBARC_datapack\supportData\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
 %For in-place packing. link to any empty folder on your machine. (KC: Find
 %better way)
-emptyFolder = "G:\Lab Work\DataPacking\TemplateDocs\empty";
+emptyFolder = "D:\Code\MBARC_datapack\templateDocs\empty";
 
 %How often do you want FLAC steps to report it's progress
 msgInterval = 20*60;  % To print status every x mins instead of every file. Change left number.
@@ -37,7 +36,7 @@ msgInterval = 20*60;  % To print status every x mins instead of every file. Chan
 projectType = 2; 
 
 %Compression Ratio (Will Be Used to Verify Enough Space on the Drive)
-compressionRatio = 2 / 5.59; %Compression Ratio : (2 Tb post-flac * 5.59 tb after)
+compressionRatio = 2 / 5.59; %Compression Ratio : (2 Tb post-flac / 5.59 tb pre)
 
 %% ESTABLISH CORRECT DATAFIELDS FOR DIFFERENT PROJECTS
 %Sets variables for appropriate spreadsheet filling based on the project.
@@ -361,7 +360,9 @@ for row = 1:rowCount
     % Row Dependent Project identifiers
     data.DATA_COLLECTION_NAME(row) = collectionSTR + matchingRows.Data_ID;
     data.DEPLOYMENT_ID(row) = regexp(hdsData.Data_ID(row),'[0-9]*','match');
-    data.PROJECT(row) = regexp(matchingRows.Data_ID,'^[a-zA-Z]*','match');
+
+
+    
     data.SITE(row) = strrep(strrep(strrep(strrep(matchingRows.Data_ID , data.PROJECT(row),''), data.DEPLOYMENT_ID(row),''),'-',''),'_','');
     data.DEPLOYMENT_TITLE(row) = matchingRows.Data_ID;
 
