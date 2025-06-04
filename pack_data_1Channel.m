@@ -22,7 +22,7 @@ fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of save
 %For Accessing Relevant Google Sheets
 templateDocsLocation = 'D:\Code\MBARC_datapack\templateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
 hdsFile = "D:\Code\MBARC_datapack\supportData\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "J:\Shared drives\MBARC_TF"; %Link to google drive.
+tfDrive = "P:\Shared drives\MBARC_TF"; %Link to google drive.
 tfFile = "D:\Code\MBARC_datapack\supportData\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
 %For in-place packing. link to any empty folder on your machine. (KC: Find
@@ -359,9 +359,7 @@ for row = 1:rowCount
 
     % Row Dependent Project identifiers
     data.DATA_COLLECTION_NAME(row) = collectionSTR + matchingRows.Data_ID;
-    data.DEPLOYMENT_ID(row) = regexp(hdsData.Data_ID(row),'[0-9]*','match');
-
-
+    data.DEPLOYMENT_ID(row) = matchingRows.Data_ID;
     
     data.SITE(row) = strrep(strrep(strrep(strrep(matchingRows.Data_ID , data.PROJECT(row),''), data.DEPLOYMENT_ID(row),''),'-',''),'_','');
     data.DEPLOYMENT_TITLE(row) = matchingRows.Data_ID;
