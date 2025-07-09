@@ -1,3 +1,4 @@
+clc; clear; close all;
 %% Code to execute Full DataPacking for drives listed in reference file. 
 %Adapted from "xwav_to_flac.m" code written by Katrina Johnson. 
 %Note: Please ensure all dependencies are completed prior to starting. See
@@ -16,21 +17,17 @@
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"; %Location of your edited spreadsheet
+inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL2.xlsx"; %Location of your edited spreadsheet
 fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 %For Accessing Relevant Google Sheets
 templateDocsLocation = 'D:\Code\MBARC_datapack\templateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
 hdsFile = "D:\Code\MBARC_datapack\supportData\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "P:\Shared drives\MBARC_TF"; %Link to google drive.
+tfDrive = "G:\Shared drives\MBARC_TF"; %Link to google drive.
 tfFile = "D:\Code\MBARC_datapack\supportData\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
-%For in-place packing. link to any empty folder on your machine. (KC: Find
-%better way)
-emptyFolder = "D:\Code\MBARC_datapack\templateDocs\empty";
-
 %How often do you want FLAC steps to report it's progress
-msgInterval = 20*60;  % To print status every x mins instead of every file. Change left number.
+msgInterval = 10*60;  % To print status every x mins instead of every file. Change left number.
 
 %Choose your project type. (1:GOM, 2: LMR, 3: CINMS ????) 
 projectType = 2; 
@@ -69,6 +66,11 @@ outputLocations(outputLocations == "") = [];
 deploymentNames = string(data(2:end, 3)); % Desired location of the data to be packaged.
 deploymentNames(deploymentNames == "") = [];
 
+docsFolders = [];
+otherFolders = [];
+calibrationFolders = [];
+sourceFolders = [];
+
 siteSuccess = zeros(1, length(inputLocations));
 
 %Verify the output location has the right folders. If not, make them
@@ -85,21 +87,25 @@ for i=1:length(outputLocations)
     targetFolder = outputLocations(i) + collectionSTR + matchingRows.Data_ID;
 
     flacFolder = targetFolder + filesep + 'data' + filesep + 'acoustic_files';
+    sourceFolders = [sourceFolders; flacFolder];
     if ~isfolder(flacFolder)
         mkdir(flacFolder)
         fprintf('Created folder: %s\n', flacFolder);
     end
     docsFolder = targetFolder + filesep + 'data' + filesep + 'docs';
+    docsFolders = [docsFolders; docsFolder];
     if ~isfolder(docsFolder)
         mkdir(docsFolder)
         fprintf('Created folder: %s\n', docsFolder);
     end
     ltsaFolder = targetFolder + filesep + 'data' + filesep + 'other';
+    otherFolders = [otherFolders; ltsaFolder];
     if ~isfolder(ltsaFolder)
         mkdir(ltsaFolder)
         fprintf('Created folder: %s\n', ltsaFolder);
     end
     tfFolder = targetFolder + filesep + 'data' + filesep + 'calibration';
+    calibrationFolders = [calibrationFolders; tfFolder];
     if ~isfolder(tfFolder)
         mkdir(tfFolder)
         fprintf('Created folder: %s\n', tfFolder);
@@ -295,9 +301,9 @@ opts = setvaropts(opts, {'DATA_COLLECTION_NAME', 'SITE', 'TITLE', 'TYPE', 'SUB_T
     'DEPLOYMENT_ID', 'PROJECT', 'PLATFORM', 'INSTRUMENT', 'DEPLOYMENT_TITLE', 'DEPLOYMENT_PURPOSE', ...
     'DEPLOYMENT_DESCRIPTION', 'PUBLIC_RELEASE_TIME_ZONE', 'OTHER_PATH', 'DOCUMENTS_PATH', ...
     'SOURCE_PATH', 'SCIENTISTS', 'SOURCES', 'FUNDERS', 'DATASET_PACKAGER', 'CALIBRATION_PATH', ...
-    'CALIBRATION_DESCRIPTION', 'PRE_DEPLOYMENT_CALIBRATION_TIMEZONE', 'SPONSORS', ...
+    'CALIBRATION_DESCRIPTION', 'PRE_DEPLOYMENT_CALIBRATION_TIMEZONE', 'POST_DEPLOYMENT_CALIBRATION_TIMEZONE', 'SPONSORS', ...
     'SEA_AREA','QUALITY_ANALYST', 'QUALITY_ANALYSIS_OBJECTIVES', 'QUALITY_ANALYSIS_METHOD', ...
-    'QUALITY', 'QUALITY_COMMENTS', 'INSTRUMENT_ID', 'PUBLIC_RELEASE_DATE', 'PRE_DEPLOYMENT_CALIBRATION_DATE' ...
+    'QUALITY', 'QUALITY_COMMENTS', 'INSTRUMENT_ID', 'PUBLIC_RELEASE_DATE', 'PRE_DEPLOYMENT_CALIBRATION_DATE', 'POST_DEPLOYMENT_CALIBRATION_DATE' ...
     'DS_TIME_ZONE', 'DE_TIME_ZONE', 'CHANNEL_TZ', 'DEP_LAT','DEP_LONG', 'DATA_START', 'DATA_END', 'CHANNEL_START', ...
     'CHANNEL_END', 'DEPLOYMENT_TIME', 'RECOVERY_TIME', 'AUDIO_START_TIME', 'AUDIO_END_TIME'...
     'DEPLOYMENT_TIME_ZONE', 'RECOVERY_TIME_ZONE', 'AUDIO_START_TZ',  'AUDIO_END_TZ', 'DEPLOY_TYPE', 'SENSOR_NAME'},...
@@ -344,6 +350,7 @@ for row = 1:rowCount
     data.PUBLIC_RELEASE_DATE(row) = datestr(datetime(year(datetime('today')), 12, 31), 'yyyy-mm-dd');
     data.PUBLIC_RELEASE_TIME_ZONE(row) = "UTC";
     data.PRE_DEPLOYMENT_CALIBRATION_TIMEZONE(row) = "UTC";
+    data.POST_DEPLOYMENT_CALIBRATION_TIMEZONE(row) = "UTC";
     data.DS_TIME_ZONE(row) = "UTC";
     data.DE_TIME_ZONE(row) = "UTC";
     data.CHANNEL_TZ(row) = "UTC";
@@ -359,17 +366,19 @@ for row = 1:rowCount
 
     % Row Dependent Project identifiers
     data.DATA_COLLECTION_NAME(row) = collectionSTR + matchingRows.Data_ID;
-    data.DEPLOYMENT_ID(row) = matchingRows.Data_ID;
+
+    code = split(matchingRows.Data_ID, "-");
+    data.DEPLOYMENT_ID(row) = code(2);
     
-    data.SITE(row) = strrep(strrep(strrep(strrep(matchingRows.Data_ID , data.PROJECT(row),''), data.DEPLOYMENT_ID(row),''),'-',''),'_','');
+    data.SITE(row) = code(1);
     data.DEPLOYMENT_TITLE(row) = matchingRows.Data_ID;
 
     %Documents (Row Dependent Paths to the files saved in previous
     %sections)
-    data.DOCUMENTS_PATH(row) = emptyFolder;
-    data.SOURCE_PATH(row) = emptyFolder;
-    data.OTHER_PATH(row) = emptyFolder;
-    data.CALIBRATION_PATH(row) = emptyFolder;
+    data.DOCUMENTS_PATH(row) = docsFolders(row);
+    data.SOURCE_PATH(row) = sourceFolders(row);
+    data.OTHER_PATH(row) = otherFolders(row);
+    data.CALIBRATION_PATH(row) = calibrationFolders(row);
     data.SENSOR_NAME(row) = matchingRows.PreAmp;
 
     %Row Dependent Data (mostly from HDS File)
@@ -483,6 +492,11 @@ for row = 1:rowCount
         siteSuccess(1, row) = -1;
     else
         data.PRE_DEPLOYMENT_CALIBRATION_DATE(row) = datetime(tfRow.DateCalibratedYYMMDD(1), 'InputFormat', 'yyMMdd', 'Format', 'yyyy-MM-dd');
+        dateVal = datetime(data.PRE_DEPLOYMENT_CALIBRATION_DATE(row), 'InputFormat', 'yyyy-MM-dd');
+        newDate = dateVal + calyears(1);
+        data.POST_DEPLOYMENT_CALIBRATION_DATE(row) = datetime(newDate, 'InputFormat', 'dd-MMM-yyyy', 'Format', 'yyyy-MM-dd');
+        
+        %string(datestr(newDate, 'yyyy-mm-dd'));
     end
 
     %Deployment Desription (Made from the Other Variables):
