@@ -17,7 +17,7 @@ clc; clear; close all;
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL2.xlsx"; %Location of your edited spreadsheet
+inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL3.xlsx"; %Location of your edited spreadsheet
 fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 %For Accessing Relevant Google Sheets
@@ -84,6 +84,7 @@ for i=1:length(outputLocations)
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    matchingRows = matchingRows(1, :);
     targetFolder = outputLocations(i) + collectionSTR + matchingRows.Data_ID;
 
     flacFolder = targetFolder + filesep + 'data' + filesep + 'acoustic_files';
@@ -138,6 +139,12 @@ for i = 1:length(inputLocations)
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    matchingRows = matchingRows(1, :);
+    if isempty(matchingRows)
+        warning('%s not Found You will have to update all data manually.', siteName);
+        continue
+    end
+
     outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'docs' + filesep;
     outDirTF = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'calibration' + filesep;
 
@@ -238,6 +245,10 @@ for i = 1:length(inputLocations)
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    matchingRows = matchingRows(1, :);
+    if isempty(matchingRows)
+        continue
+    end
     outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'other' + filesep;
     
 
@@ -329,6 +340,11 @@ for row = 1:rowCount
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    matchingRows = matchingRows(1, :);
+    if isempty(matchingRows)
+        warning('%s not Found You will have to update all data manually.', siteName);
+        continue
+    end
     tfNum = matchingRows.PreAmp;
     tfNum = regexprep(tfNum, '[^0-9]', '');
 
@@ -434,7 +450,7 @@ for row = 1:rowCount
     if isnat(matchingRows.Deploy_Date)
         data.DEPLOYMENT_TIME(row) = "NaN";
         warning('Deploy_Date missing for row %s', siteName);
-        siteSuccess(1, i) = -1;
+        siteSuccess(1, row) = -1;
     else
         data.DEPLOYMENT_TIME(row) = datestr(matchingRows.Deploy_Date, 'yyyy-mm-ddTHH:MM:SS');
     end
@@ -443,7 +459,7 @@ for row = 1:rowCount
     if isnat(matchingRows.Recovery_Date)
         data.RECOVERY_TIME(row) = "NaN";
         warning('Deploy_Date missing for row %s', siteName);
-        siteSuccess(1, i) = -1;
+        siteSuccess(1, row) = -1;
     else
         data.RECOVERY_TIME(row) = datestr(matchingRows.Recovery_Date, 'yyyy-mm-ddTHH:MM:SS');
     end
@@ -568,6 +584,10 @@ for i=1:length(inputLocations)
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    if isempty(matchingRows)
+        warning('%s not Found You will have to update all data manually.', siteName);
+        continue
+    end
     outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'acoustic_files' + filesep;
 
     if ~isfolder(outDir)
@@ -608,6 +628,10 @@ for i=1:length(inputLocations)
 
     %Retrieve the TF PDF from the hds file and place into the folder
     matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+    if isempty(matchingRows)
+        warning('%s not Found You will have to update all data manually.', siteName);
+        continue
+    end
     outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'acoustic_files' + filesep;
 
     flacList = dir(outDir);
