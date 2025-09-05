@@ -17,20 +17,21 @@ clc; clear; close all;
 dataSetPackager = "Kasey Castello";
 
 %Local File Paths
-inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL3.xlsx"; %Location of your edited spreadsheet
+inputFile = "D:\Code\MBARC_datapack\MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"; %Location of your edited spreadsheet
 fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of saved Flac folder
 
 %For Accessing Relevant Google Sheets
 templateDocsLocation = 'D:\Code\MBARC_datapack\templateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
 hdsFile = "D:\Code\MBARC_datapack\supportData\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "G:\Shared drives\MBARC_TF"; %Link to google drive.
+tfDrive = "J:\Shared drives\MBARC_TF"; %Link to google drive.
 tfFile = "D:\Code\MBARC_datapack\supportData\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
 %How often do you want FLAC steps to report it's progress
 msgInterval = 10*60;  % To print status every x mins instead of every file. Change left number.
 
 %Choose your project type. (1:GOM, 2: LMR, 3: CINMS ????) 
-projectType = 2; 
+projectType = 3; 
+includeLTSA = false; %Sometimes we should keep LTSAs and sometimes not. Ask Kait before we start.
 
 %Compression Ratio (Will Be Used to Verify Enough Space on the Drive)
 compressionRatio = 2 / 5.59; %Compression Ratio : (2 Tb post-flac / 5.59 tb pre)
@@ -46,7 +47,7 @@ switch projectType
         run('metadata_CINMS.m');
     otherwise
 end
-
+fprintf("Gathered initial variables, beginning folder transfer and spreadsheet update.\n")
 %% CREATE END-DESTINATION FOLDERS.
 data = readcell(inputFile);
 hdOpts = detectImportOptions(hdsFile, 'PreserveVariableNames', true);
@@ -231,78 +232,81 @@ clearvars tfFound tfNum tfNumVal tokens topFolders inputDir k m normalizedSiteNa
 %% SET UP LTSA FOLDER.
 %Grab the LTSAs off of the .xwav folders from the drives for the
 % associated deployment
+if(includeLTSA)
+    for i = 1:length(inputLocations)
+        % Define the current input directory
+        inputDir = inputLocations(i);
     
-for i = 1:length(inputLocations)
-    % Define the current input directory
-    inputDir = inputLocations(i);
-
-    %Determining Row Data For Later Column Fills. 
-    siteName = deploymentNames(i);
-
-    % Normalize siteName
-    normalizedSiteName = regexprep(siteName, '[^a-zA-Z0-9]', ''); % Remove non-alphanumeric
-    normalizedSiteName = lower(normalizedSiteName); % Convert to lowercase
-
-    %Retrieve the TF PDF from the hds file and place into the folder
-    matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
-    matchingRows = matchingRows(1, :);
-    if isempty(matchingRows)
-        continue
-    end
-    outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'other' + filesep;
+        %Determining Row Data For Later Column Fills. 
+        siteName = deploymentNames(i);
     
-
-    % Ensure the output directory exists
-    if ~isfolder(outDir)
-        mkdir(outDir);
-    end
-
-    % Get the list of subdirectories and files in the input directory
-    dirList = dir(inputDir);
-
-    for iDir = 1:length(dirList)
-        % Skip system directories "." and ".."
-        if dirList(iDir).isdir && ~startsWith(dirList(iDir).name, '.')
-            % Get LTSA files from the subdirectory
-            thisList = dir(fullfile(inputDir, dirList(iDir).name, '*.ltsa'));
-            
-            % If LTSA files exist, copy them to the output directory
-            if ~isempty(thisList)
-                for k = 1:length(thisList)
-                    sourceFile = fullfile(thisList(k).folder, thisList(k).name);
-                    destinationFile = fullfile(outDir, thisList(k).name);
-
-                    % Check if the file already exists in the destination
-                    if exist(destinationFile, 'file')
-                        % Compare file sizes to check if it was fully copied
-                        sourceInfo = dir(sourceFile);
-                        destInfo = dir(destinationFile);
-                        
-                        if sourceInfo.bytes == destInfo.bytes
-                            continue; % Skip this file
-                        else
-                            fprintf('File exists but sizes differ, recopying: %s\n', sourceFile);
+        % Normalize siteName
+        normalizedSiteName = regexprep(siteName, '[^a-zA-Z0-9]', ''); % Remove non-alphanumeric
+        normalizedSiteName = lower(normalizedSiteName); % Convert to lowercase
+    
+        %Retrieve the TF PDF from the hds file and place into the folder
+        matchingRows = hdsData(contains(normalizedDataIDs, normalizedSiteName), :); % Find matching rows
+        matchingRows = matchingRows(1, :);
+        if isempty(matchingRows)
+            continue
+        end
+        outDir = outputLocations(i) + collectionSTR + matchingRows.Data_ID + filesep + 'data' + filesep + 'other' + filesep;
+        
+    
+        % Ensure the output directory exists
+        if ~isfolder(outDir)
+            mkdir(outDir);
+        end
+    
+        % Get the list of subdirectories and files in the input directory
+        dirList = dir(inputDir);
+    
+        for iDir = 1:length(dirList)
+            % Skip system directories "." and ".."
+            if dirList(iDir).isdir && ~startsWith(dirList(iDir).name, '.')
+                % Get LTSA files from the subdirectory
+                thisList = dir(fullfile(inputDir, dirList(iDir).name, '*.ltsa'));
+                
+                % If LTSA files exist, copy them to the output directory
+                if ~isempty(thisList)
+                    for k = 1:length(thisList)
+                        sourceFile = fullfile(thisList(k).folder, thisList(k).name);
+                        destinationFile = fullfile(outDir, thisList(k).name);
+    
+                        % Check if the file already exists in the destination
+                        if exist(destinationFile, 'file')
+                            % Compare file sizes to check if it was fully copied
+                            sourceInfo = dir(sourceFile);
+                            destInfo = dir(destinationFile);
+                            
+                            if sourceInfo.bytes == destInfo.bytes
+                                continue; % Skip this file
+                            else
+                                fprintf('File exists but sizes differ, recopying: %s\n', sourceFile);
+                            end
                         end
+    
+                        % Copy file if not present or sizes don't match
+                        copyfile(sourceFile, destinationFile);
                     end
-
-                    % Copy file if not present or sizes don't match
-                    copyfile(sourceFile, destinationFile);
                 end
             end
         end
+        % Filter directories that contain 'disk' in their name
+        diskDirs = dirList([dirList.isdir]);  % Only directories
+        diskDirs = diskDirs(contains({diskDirs.name}, 'disk', 'IgnoreCase', true));  % Contain 'disk'
+    
+        LTSA_size = length(dir(fullfile(outDir, '*.ltsa')));
+    
+        if(LTSA_size < length(diskDirs)-2)
+            warning('Missing LTSAs in your %s source directory.\n', outDir);
+            siteSuccess(1, i) = -1;
+        end
     end
-    % Filter directories that contain 'disk' in their name
-    diskDirs = dirList([dirList.isdir]);  % Only directories
-    diskDirs = diskDirs(contains({diskDirs.name}, 'disk', 'IgnoreCase', true));  % Contain 'disk'
-
-    LTSA_size = length(dir(fullfile(outDir, '*.ltsa')));
-
-    if(LTSA_size < length(diskDirs)-2)
-        warning('Missing LTSAs in your %s source directory.\n', outDir);
-        siteSuccess(1, i) = -1;
-    end
+    clearvars inputDir outDir dirList LTSA_size destInfo
+else
+    fprintf("User opted not to save LTSAs. Verify correct before PACE.\n");
 end
-clearvars inputDir outDir dirList LTSA_size destInfo
 %% FILL OUT PACE SHEET 
 % Extract column headers (assuming first row contains headers)
 opts = detectImportOptions(inputFile, 'PreserveVariableNames', true);
@@ -383,10 +387,10 @@ for row = 1:rowCount
     % Row Dependent Project identifiers
     data.DATA_COLLECTION_NAME(row) = collectionSTR + matchingRows.Data_ID;
 
-    code = split(matchingRows.Data_ID, "-");
-    data.DEPLOYMENT_ID(row) = code(2);
+    code = regexp(matchingRows.Data_ID, '[-_]', 'split');
+    data.DEPLOYMENT_ID(row) = code{1}{3};
     
-    data.SITE(row) = code(1);
+    data.SITE(row) = code{1}{2};
     data.DEPLOYMENT_TITLE(row) = matchingRows.Data_ID;
 
     %Documents (Row Dependent Paths to the files saved in previous

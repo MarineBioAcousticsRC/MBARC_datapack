@@ -3,8 +3,8 @@ myProject = "MBARC_CINMS";
 collectionSTR = "MBARC_";
 mySource = "Scripps Institution of Oceanography";
 mySponsors = "Scripps Institution of Oceanography";
-myFunders = "California Marine Sanctuary Foundation; Southern California Coastal Ocean Observing System";
-myScientists = "Simone Baumann-Pickering; Kaitlin Frasier; John Hildebrand; Vanessa ZoBell";
+myFunders = "California Marine Sanctuary Foundation;Southern California Coastal Ocean Observing System";
+myScientists = "Simone Baumann-Pickering;Kaitlin Frasier;John Hildebrand;Vanessa ZoBell";
 DATA_COMMENT = ["This dataset includes acoustic recordings from each HARP deployment over the 2023-2025 period.," + ...
     "In addition to the raw acoustic recordings," + ...
     "there are several associated files for these data which include calibration files (transfer functions) " + ...
