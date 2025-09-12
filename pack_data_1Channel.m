@@ -23,13 +23,13 @@ fullPathFlac = '"C:\Program Files\flac-1.3.2-win\win64\flac"'; %Location of save
 %For Accessing Relevant Google Sheets
 templateDocsLocation = 'D:\Code\MBARC_datapack\templateDocs'; %Location of where you stored the ltsa, tf, and xwav readmes.
 hdsFile = "D:\Code\MBARC_datapack\supportData\HARPDataSummary_20250205.xlsx"; %Download and save a version of the HDS file google sheet. I tried to access this online but things got complicated.
-tfDrive = "J:\Shared drives\MBARC_TF"; %Link to google drive.
+tfDrive = "I:\Shared drives\MBARC_TF"; %Link to google drive.
 tfFile = "D:\Code\MBARC_datapack\supportData\HARP_Hydrophones.xlsx"; %Link to TF documentation spreadsheet.
 
 %How often do you want FLAC steps to report it's progress
-msgInterval = 10*60;  % To print status every x mins instead of every file. Change left number.
+msgInterval = 20*60;  % To print status every x mins instead of every file. Change left number.
 
-%Choose your project type. (1:GOM, 2: LMR, 3: CINMS ????) 
+%Choose your project type. (1:GOM, 2: LMR, 3: CINMS, ????) 
 projectType = 3; 
 includeLTSA = false; %Sometimes we should keep LTSAs and sometimes not. Ask Kait before we start.
 
