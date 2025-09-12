@@ -16,14 +16,17 @@ If code alteration is needed, please create your own branch and commit a pull re
 #### 2. Translator Setup
   1. Open PACE application and then close again.
   2. Clone into this git repository:
-     ``````
+     ```
+     git clone https://github.com/MarineBioAcousticsRC/MBARC_datapack.git
+     ```
   4. Reopen PACE and then click the "Translators" tab and then "Create"
-<img width="726" height="400" alt="image" src="https://github.com/user-attachments/assets/4fa423bd-8875-4287-8423-6f2a69c5499a" />
+    
+    
   5. Under name, enter "MBARC-1Channel."
   6. Select "Import Spreadsheet Headers"
-  7. Under package type, select "Audio"
-  8. 
-
+  7. Navigate to where you made your cloned folder, and choose "MBARC_PACE_DATA_IMPORT_1CHANNEL.xlsx"
+  8. Under package type, select "Audio"
+  9. Choose the options as shown in the below images. Note some fields may be left blank:
 
 #### 2. FLAC Installation
   1. Download [flac-1.3.2-win](https://github.com/KaseyMCastello/MBARC_datapack/blob/main/flac-1.3.2-win-20250411T171703Z-001.zip).
