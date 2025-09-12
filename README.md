@@ -1,25 +1,29 @@
 # MBARC_datapack
-This repository contains tools designed to streamline the packaging of High-Frequency Acoustic Recording Package (HARP) data for archival with NOAA. It is built upon the file management systems employed by the Scripps Institution of Oceanography's MBARC program and may require modification for use outside of that environment, or for operation on Linux based systems.
+This repository contains tools designed to streamline the packaging of High-Frequency Acoustic Recording Package (HARP) data for archival with NOAA. It is built upon the file management systems employed by the Scripps Institution of Oceanography's MBARC program and may require modification for use outside of that environment, or for operation on Linux based systems. See sections below for first-time setup and running datapacking.
 
 For inquiries, please contact: kcastello@ucsd.edu
 
-## A. Branch Management
+## Branch Management
 Commits to main are restricted to the code owners. 
 
 If code alteration is needed, please create your own branch and commit a pull request for code merge into main.
 
-## B. Setup
-
-### 1. PACE Installation
-#### 1. PACE Installation
-  1. Download appropriate GUI file from [here](https://github.com/CI-CMG/pace/releases/tag/v1.0.2). For MBARC, this should be "pace-gui-Windows-X64-1.0.2.msi"
+# First Time Setup
+### 1. PACE Installation and Setup
+#### 1. Installation
+  1. Download appropriate GUI file from [here](https://github.com/CI-CMG/pace/releases). For MBARC, this was optimized for version 1.2.1. Download "pace-gui-Windows-X64-1.2.1.msi"
   2. Open downloaded file to launch installer and follow prompts to complete installation.
-  3. Open PACE application and then close again.
-  4. Copy and paste premade translator files into your PACE.
-       * Find and open where PACE appData is saved. For MBARC, will likely be C:\Users\HARP\.pace.
-       * If you don't see .pace, click "Hidden items" ![image](https://github.com/user-attachments/assets/2473d09b-a3a7-43f0-ac96-b07ab146083d)
-       * In .pace\data, replace the folders that have equivalents [here]. (https://github.com/KaseyMCastello/MBARC_datapack/tree/main/appData) This will help you not have to build your own translator later.
-       * ![image](https://github.com/user-attachments/assets/4f091e3b-42ca-4ab3-a3ad-89774838f3a9)
+#### 2. Translator Setup
+  1. Open PACE application and then close again.
+  2. Clone into this git repository:
+     ``````
+  4. Reopen PACE and then click the "Translators" tab and then "Create"
+<img width="726" height="400" alt="image" src="https://github.com/user-attachments/assets/4fa423bd-8875-4287-8423-6f2a69c5499a" />
+  5. Under name, enter "MBARC-1Channel."
+  6. Select "Import Spreadsheet Headers"
+  7. Under package type, select "Audio"
+  8. 
+
 
 #### 2. FLAC Installation
   1. Download [flac-1.3.2-win](https://github.com/KaseyMCastello/MBARC_datapack/blob/main/flac-1.3.2-win-20250411T171703Z-001.zip).
